@@ -16,14 +16,22 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
 app.use(cors());
-
-const port = process.env.PORT;
-
-mongoose.connect(`${process.env.CONNECTION_URL}`)
-  .then(() => app.listen(port, () => {
-    console.log(`Server is running on port: ${port}`);
-  }))
+dbConenct = async () =>{
+await mongoose.connect(`${process.env.CONNECTION_URL}`, { useNewUrlParser: true })
+  .then(() => {
+    console.log('Connected to MongoDB');
+    const db = mongoose.connection;
+    // Your database operations here
+  })
   .catch((error) => console.log(error.message));
+}
+const port = process.env.PORT || 3001;
+app.listen(port, () => {
+  dbConenct();
+  console.log(`Server is running on port: ${port}`);
+});
+
+
 
 mongoose.set("useCreateIndex", true);
 
